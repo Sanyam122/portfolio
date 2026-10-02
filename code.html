@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanyam Jain — Full Stack Developer Portfolio</title>
+  <meta name="description" content="Sanyam Jain, full-stack developer and B.Tech IT student from Pune. Java backend and MERN projects.">
+  <meta name="theme-color" content="#F5F5F5">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2732%27 fill=%27%23222%27/%3E%3Ctext x=%2732%27 y=%2742%27 font-size=%2726%27 font-family=%27Arial%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%23fff%27%3ESJ%3C/text%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    /* ============ DESIGN (unchanged) ============ */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #F5F5F5;
+      color: #222222;
+      -webkit-font-smoothing: antialiased;
+    }
+    .headline-tight {
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+    }
+    .subhead-tight {
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    .shadow-btn-dark {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    }
+    .violet-gradient-card {
+      background: linear-gradient(135deg, #8F8CF0 0%, #B7B3F7 100%);
+    }
+    .contact-gradient-card {
+      background: linear-gradient(108deg, #FFFFFF 0%, #F5F3FF 45%, #C4C2F7 100%);
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    section[id] { scroll-margin-top: 24px; }
+    section[id]:focus { outline: none; }
+    a:focus-visible, button:focus-visible { outline: 2px solid #6C63E8; outline-offset: 3px; }
+
+    /* ============ MOTION SYSTEM ============ */
+    :root {
+      --ease-expo:   cubic-bezier(.16, 1, .3, 1);     /* long, silky deceleration */
+      --ease-quart:  cubic-bezier(.25, 1, .5, 1);     /* softer settle for opacity */
+      --ease-spring: cubic-bezier(.34, 1.56, .64, 1); /* tiny overshoot, used sparingly */
+    }
+
+    /* Scrolling is handled by JS (eased glide). Native smooth stays as a no-JS fallback. */
+    html { scroll-behavior: auto; }
+    html:not(.js) { scroll-behavior: smooth; }
+
+    /* ---------- Marquee ---------- */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: max-content;
+      animation: marquee 20s linear infinite;
+      will-change: transform;
+    }
+    .animate-marquee > span { flex-shrink: 0; white-space: nowrap; padding-right: 2.5rem; }
+    .marquee-wrap:hover .animate-marquee { animation-play-state: paused; }   /* no-JS fallback */
+    .animate-marquee.is-js { animation: none; }                              /* JS drives it with easing */
+
+    /* ---------- Nav underline: wipes in from the left, exits to the right ---------- */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px;
+      border-radius: 2px; background: #2F9FB3;
+      transform: scaleX(0); transform-origin: right;
+      transition: transform .7s var(--ease-expo);
+    }
+    .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); transform-origin: left; }
+    .nav-link.active { color: #222222; }
+
+    /* ---------- Scroll / load reveal (only when JS runs, so content never stays hidden) ---------- */
+    .js .reveal {
+      opacity: 0;
+      translate: 0 var(--y, 32px);
+      scale: var(--s, 1);
+      transition:
+        opacity   1s   var(--ease-quart) var(--d, 0ms),
+        translate 1.2s var(--ease-expo)  var(--d, 0ms),
+        scale     1.2s var(--ease-expo)  var(--d, 0ms),
+        filter    1s   var(--ease-quart) var(--d, 0ms),
+        transform .8s  var(--ease-expo),
+        box-shadow .8s var(--ease-expo),
+        background-color .3s ease;
+    }
+    .js .reveal[data-blur] { filter: blur(8px); }
+    .js .reveal.in { opacity: 1; translate: none; scale: none; filter: none; }
+    .js .reveal:not(.done) { will-change: opacity, translate, scale; }
+
+    /* ---------- Headline words: rise out of a mask ---------- */
+    .w { display: inline-block; overflow: hidden; vertical-align: top; padding: .08em 0 .14em; margin: -.08em 0 -.14em; }
+    .wi { display: inline-block; transform-origin: 0 100%; }
+    .js [data-split] .wi {
+      opacity: 0;
+      transform: translate3d(0, 112%, 0) rotate(5deg);
+      transition:
+        transform 1.3s var(--ease-expo)  calc(var(--d, 0ms) + var(--i, 0) * var(--step, 55ms)),
+        opacity   .8s  var(--ease-quart) calc(var(--d, 0ms) + var(--i, 0) * var(--step, 55ms));
+    }
+    .js [data-split].in .wi { opacity: 1; transform: none; }
+
+    /* ---------- Mission text: words light up with scroll ---------- */
+    .sw { transition: opacity .6s var(--ease-quart); }
+
+    /* ---------- Images: settle in once, then slow zoom on hover ---------- */
+    .media-img { transition: transform 1.4s var(--ease-expo); }
+    .js .media-img {
+      scale: 1.14;
+      transition:
+        scale 1.9s var(--ease-expo) calc(var(--d, 0ms) + 150ms),
+        transform 1.4s var(--ease-expo);
+    }
+    .js .reveal.in .media-img { scale: none; }
+
+    /* ---------- Cards: lift on hover (hit-area extension prevents edge flicker) ---------- */
+    .card-lift { position: relative; }
+    .card-lift::after { content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px; }
+    @media (hover: hover) {
+      .card-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 28px 56px -30px rgba(34, 34, 34, .32);
+      }
+      .card-lift:hover .media-img,
+      .zoom-host:hover .media-img { transform: scale(1.05); }
+    }
+
+    /* ---------- Buttons: soft magnetic pull + press ---------- */
+    .btn {
+      transition:
+        translate .8s var(--ease-expo),
+        scale .6s var(--ease-expo),
+        background-color .4s ease,
+        box-shadow .6s var(--ease-expo),
+        opacity .3s ease;
+    }
+    @media (hover: hover) {
+      .btn:hover { scale: 1.03; box-shadow: 0 16px 32px rgba(0, 0, 0, .24); }
+      .btn-wide:hover { scale: 1.01; }
+    }
+    .btn:active { scale: .97; transition-duration: .8s, .2s, .4s, .6s, .3s; }
+    .btn-wide:active { scale: .99; }
+    .btn:disabled, .btn:disabled:hover { scale: 1; box-shadow: 0 10px 20px rgba(0, 0, 0, .18); }
+
+    /* ---------- Social icons: spring hover + staggered pop-in ---------- */
+    .icon-btn {
+      transition:
+        transform .7s var(--ease-spring),
+        box-shadow .6s var(--ease-expo),
+        background-color .4s ease;
+    }
+    @media (hover: hover) {
+      .icon-btn:hover { transform: translateY(-3px) scale(1.08); box-shadow: 0 12px 22px -10px rgba(34, 34, 34, .35); }
+    }
+    .icon-btn:active { transform: scale(.94); }
+    .js .reveal.icon-btn {
+      transition:
+        opacity   .8s var(--ease-quart),
+        translate 1s  var(--ease-spring),
+        scale     1s  var(--ease-spring),
+        transform .7s var(--ease-spring),
+        box-shadow .6s var(--ease-expo),
+        background-color .4s ease;
+      transition-delay: var(--d, 0ms), var(--d, 0ms), var(--d, 0ms), 0ms, 0ms, 0ms;
+    }
+
+    /* ---------- Availability dot: soft expanding ring ---------- */
+    .status-dot { position: relative; }
+    .status-dot::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; background: #2F9FB3;
+      animation: dot-ring 2.6s var(--ease-quart) infinite;
+    }
+    @keyframes dot-ring {
+      0%   { transform: scale(1);   opacity: .5; }
+      75%, 100% { transform: scale(3.4); opacity: 0; }
+    }
+
+    /* ---------- Footer links: underline sweep ---------- */
+    .foot-link { position: relative; transition: color .4s ease; }
+    .foot-link::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px; background: currentColor;
+      transform: scaleX(0); transform-origin: right; transition: transform .7s var(--ease-expo);
+    }
+    .foot-link:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    /* ---------- Form ---------- */
+    .field {
+      transition:
+        background-color .5s var(--ease-quart),
+        box-shadow .6s var(--ease-expo),
+        border-color .5s ease,
+        transform .6s var(--ease-expo);
+    }
+    .field:focus { background-color: rgba(255, 255, 255, .88); transform: translateY(-1px); }
+
+    @keyframes pop {
+      from { opacity: 0; transform: translateY(10px) scale(.98); filter: blur(4px); }
+      to   { opacity: 1; transform: none; filter: none; }
+    }
+    .pop { animation: pop .7s var(--ease-expo) both; }
+    @keyframes swap {
+      from { opacity: 0; filter: blur(3px); }
+      to   { opacity: 1; filter: none; }
+    }
+    .swap { animation: swap .5s var(--ease-quart) both; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 16px; height: 16px; border-radius: 9999px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; animation: spin .75s linear infinite; }
+
+    /* ---------- Safety nets ---------- */
+    .js.no-motion .reveal, .js.no-motion [data-split] .wi, .js.no-motion .media-img, .js.no-motion .sw {
+      transition: none !important; opacity: 1 !important; translate: none !important;
+      scale: none !important; transform: none !important; filter: none !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html, html:not(.js) { scroll-behavior: auto; }
+      .animate-marquee, .status-dot::after { animation: none !important; }
+      .js .reveal, .js [data-split] .wi, .js .media-img, .sw {
+        transition: none !important; opacity: 1 !important; translate: none !important;
+        scale: none !important; transform: none !important; filter: none !important;
+      }
+      .card-lift:hover, .icon-btn:hover, .icon-btn:active, .field:focus { transform: none !important; }
+      .btn, .btn:hover, .btn:active { scale: none !important; translate: none !important; }
+      .pop, .swap, .spinner { animation: none !important; }
+    }
+  </style>
+</head>
+<body id="top" class="p-4 md:p-6 lg:p-8 flex justify-center">
+
+  <!-- Main Container Frame: #F5F5F5 background with 16px inner breathing room -->
+  <div class="w-full max-w-[1440px] space-y-6">
+
+    <!-- 1. NAVBAR -->
+    <header class="w-full h-20 bg-white rounded-[24px] px-8 flex items-center justify-between border border-black/[0.03]">
+      <a href="#top" class="flex items-center gap-3.5" aria-label="Sanyam Jain — back to top">
+        <div class="w-10 h-10 rounded-full bg-[#222222] flex items-center justify-center text-white font-bold text-lg tracking-tight">SJ</div>
+        <span class="text-[16px] font-semibold tracking-wider text-[#222222] uppercase">Sanyam jain</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-[14px] font-medium text-[#777777]">
+        <a href="#services" class="nav-link hover:text-[#222222] transition-colors">Skills</a>
+        <a href="#work" class="nav-link hover:text-[#222222] transition-colors">Work</a>
+        
+        <a href="#contact" class="nav-link hover:text-[#222222] transition-colors">Contact</a>
+      </nav>
+
+      <div>
+        <a href="#contact" class="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#222222] text-white text-[15px] font-medium shadow-btn-dark hover:bg-black btn">Contact Me</a>
+      </div>
+    </header>
+
+    <!-- 2. HERO SECTION -->
+    <section id="hero" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <!-- HERO LEFT COLUMN -->
+      <div class="lg:col-span-6 bg-white rounded-[40px] p-8 md:p-14 flex flex-col justify-between border border-black/[0.03]">
+        <div class="space-y-8">
+          <!-- Availability Pill -->
+          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#E1F2F5] text-[#2F9FB3] text-[12px] font-semibold tracking-wider uppercase">
+            <span class="w-2 h-2 rounded-full bg-[#2F9FB3] status-dot"></span>
+            AVAILABLE FOR WORK
+          </div>
+
+          <!-- Huge Tight Headline -->
+          <h1 class="text-[56px] sm:text-[84px] xl:text-[88px] min-[1400px]:text-[100px] font-medium break-words text-[#222222] headline-tight tracking-[-0.04em]">
+            Hi, I'm a Full Stack Developer</h1>
+
+          <!-- Muted 2-line paragraph -->
+          <p class="text-[17px] md:text-[19px] text-[#777777] leading-relaxed max-w-[480px]">Full-stack developer and B.Tech IT student from Pune, building useful web products with clean design and solid code. Open to software engineering internships.</p>
+        </div>
+
+        <div class="pt-8">
+          <a href="#contact" class="inline-flex items-center justify-center px-9 py-4 rounded-full bg-[#222222] text-white text-[16px] font-medium shadow-btn-dark hover:bg-black btn">
+            Contact Me
+          </a>
+        </div>
+      </div>
+
+      <!-- HERO RIGHT COLUMN (BENTO GRID) -->
+      <div class="lg:col-span-6 flex flex-col gap-6">
+        <!-- Row 1: Profile Card + Portrait Card -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
+          <!-- Profile Card -->
+          <div class="bg-white rounded-[32px] p-7 flex flex-col justify-between border border-black/[0.03] min-h-[300px]">
+            <div class="flex-1 flex flex-col">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-[24px] font-semibold text-[#222222] tracking-tight">SanyamJain</h3>
+                  <p class="text-[14px] text-[#777777] mt-0.5">Pune, India</p>
+                </div>
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-[#E8F0FE] text-[#2563EB] text-[12px] font-semibold tracking-wide">Open To Work</span>
+              </div>
+
+              <!-- Yoga Mockup preview embedded inside -->
+              <div class="mt-6 rounded-[20px] overflow-hidden border border-black/[0.05] flex-1 min-h-[128px] relative bg-slate-50">
+                <img src="https://tse4.mm.bing.net/th/id/OIP.cY49Uo6xLDtA3JkhjI7BlwHaHa?r=0&amp;rs=1&amp;pid=ImgDetMain&amp;o=7&amp;rm=3" alt="Project preview" data-label="Project preview" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover opacity-85 media-img">
+                <div class="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent"></div>
+              </div>
+            </div>
+
+            <div class="pt-4 flex items-center justify-between">
+              <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EBEBEB] text-[#666666] text-[11px] font-semibold tracking-wider uppercase" style="font-size: 9.5px; line-height: 12px;">Java Backend &amp; mern</span>
+              <span class="text-[12px] text-[#777777] font-medium">UTC+5:30</span>
+            </div>
+          </div>
+
+          <!-- Portrait Card -->
+          <div class="bg-white rounded-[32px] overflow-hidden border border-black/[0.03] relative min-h-[300px] group">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuADzDvadllRfFMrzL_F-rRfz4773lpPkD3J7XaCNlIJV_Um5RcHNPkdsrpfe0myzl3tUakyU7skdb1nETBSBJulWAe-XSqYQNKcq9BJru3__4W2oOGanz0tTN5ZS7DZI9vVUA2xItgw7zgUYjhoWKiw0shwKG18Zy8w7SZIGoTnFIpwRsi1F8IvZXAjL7auuc1bCO4JFDivKjVrAWD_8PMp8B311UW3X5lyy9Dmkubj-mzzCjoblm1hP-Tp3eeEGRhRPeZ5y2L4Cacnag" alt="Sanyam Jain portrait" data-label="Sanyam Jain" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-cover object-center media-img">
+            <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-full flex items-center justify-between">
+              <span class="text-[13px] font-medium text-[#222222]">Full Stack Developer</span>
+              <span class="w-2 h-2 rounded-full bg-[#2F9FB3]"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Violet Gradient Card + Socials Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-stretch">
+          <!-- Violet Gradient Card -->
+          <div class="sm:col-span-8 violet-gradient-card rounded-[32px] p-7 text-white flex flex-col justify-between min-h-[190px]">
+            <p class="text-[17px] font-medium tracking-tight text-white/95">
+              Things I've built recently ✦
+            </p>
+
+            <!-- Marquee logos with fade mask -->
+            <div class="marquee-wrap relative overflow-hidden w-full py-2">
+              <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#8F8CF0] to-transparent z-10 pointer-events-none"></div>
+              <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#B7B3F7] to-transparent z-10 pointer-events-none"></div>
+              <div class="animate-marquee items-center" aria-hidden="true"><span class="text-[17px] font-bold tracking-widest uppercase text-white/90">StayHub</span><span class="text-[17px] font-bold tracking-widest uppercase text-white/90">Job Portal</span><span class="text-[17px] font-bold tracking-widest uppercase text-white/90">Weather IQ</span><span class="text-[17px] font-bold tracking-widest uppercase text-white/90">StayHub</span><span class="text-[17px] font-bold tracking-widest uppercase text-white/90">Job Portal</span><span class="text-[17px] font-bold tracking-widest uppercase text-white/90">Weather IQ</span></div>
+            </div>
+          </div>
+
+          <!-- 2x3 Grid of Social Icon Buttons -->
+          <div class="sm:col-span-4 bg-white rounded-[32px] p-5 border border-black/[0.03] grid grid-cols-2 gap-3 items-center justify-items-center">
+            <!-- Figma -->
+            <a href="https://github.com/Sanyam122" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-full bg-[#EEEEF6] flex items-center justify-center icon-btn" title="GitHub" aria-label="GitHub"><svg class="w-5 h-5 text-[#222222]" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg></a>
+            <!-- LinkedIn -->
+            
+            <!-- Dribbble -->
+            <a href="https://www.instagram.com/sanyam_baj" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-full bg-[#EEEEF6] flex items-center justify-center icon-btn" title="Instagram" aria-label="Instagram"><svg class="w-5 h-5 text-[#E1306C]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg></a>
+            <!-- Pinterest -->
+            <a href="https://www.linkedin.com/in/jainsanyam01" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-full bg-[#EEEEF6] flex items-center justify-center icon-btn" title="LinkedIn" aria-label="LinkedIn"><svg class="w-5 h-5 text-[#0A66C2]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"></path></svg></a>
+            <!-- Behance -->
+            
+            <!-- X -->
+            <a href="https://x.com/jainsanyam441" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-full bg-[#EEEEF6] flex items-center justify-center icon-btn" title="X (Twitter)" aria-label="X (Twitter)">
+              <svg class="w-4 h-4 text-[#000000]" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MISSION CARD -->
+    <section id="about" class="w-full bg-[#2F9FB3] rounded-[40px] p-8 md:p-14 text-white">
+      <div class="max-w-[1100px]">
+        <h2 class="text-[32px] sm:text-[44px] md:text-[52px] font-medium leading-[1.08] tracking-[-0.03em] text-white">
+          I build reliable, user-friendly web products, from clean interfaces to solid backend logic, and I'm always learning to ship better software.
+        </h2>
+      </div>
+
+      <!-- Partner Logos row -->
+      <div class="mt-12 pt-8 border-t border-white/20 flex flex-wrap items-center justify-between gap-8">
+        <span class="text-[26px] font-black tracking-tighter text-white/80 uppercase">REACT.JS</span>
+        <span class="text-[26px] font-extrabold tracking-tight text-white/80 lowercase flex items-center gap-1">NODE.js</span>
+        <span class="text-[24px] font-bold tracking-tight text-white/80 flex items-center gap-1.5">Express Js</span>
+        <span class="text-[24px] font-semibold tracking-tight text-white/80">Java</span>
+        <span class="text-[26px] font-black tracking-tight text-white/80 lowercase">MongoDb</span>
+        <span class="text-[26px] font-bold tracking-tight text-white/80">REST API</span>
+      </div>
+    </section>
+
+    <!-- 4. SERVICES SECTION (1fr / 3fr) -->
+    <section id="services" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Services Left Column -->
+      <div class="lg:col-span-4 lg:sticky lg:top-8 pt-4">
+        <h2 class="text-[42px] md:text-[50px] font-medium text-[#222222] subhead-tight">
+          How Can I<br>Assist You?
+        </h2>
+        <p class="mt-4 text-[16px] text-[#777777] max-w-[320px]">
+          End-to-end development, from clean interfaces to reliable APIs, built to grow with your product.
+        </p>
+      </div>
+
+      <!-- Services Right Column: 2x2 Grid of Cards -->
+      <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- 01 UI Design -->
+        <div class="bg-white rounded-[32px] p-8 border border-black/[0.03] flex flex-col justify-between min-h-[260px]">
+          <div class="flex items-start gap-5">
+            <div class="w-12 h-12 rounded-full bg-[#EEEEF6] flex-shrink-0 flex items-center justify-center text-[#6C63E8]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" stroke-width="2"></rect><path stroke-width="2" d="M3 9h18M9 21V9"></path></svg>
+            </div>
+            <p class="text-[14px] text-[#777777] leading-relaxed">
+              I build responsive, accessible interfaces with React, focused on clean layouts and a smooth user experience.
+            </p>
+          </div>
+          <div class="pt-8 flex items-baseline justify-between border-t border-black/[0.04]">
+            <h3 class="text-[24px] font-medium text-[#222222] tracking-tight">Frontend</h3>
+            <span class="text-[16px] font-semibold text-[#777777]">01</span>
+          </div>
+        </div>
+
+        <!-- 02 Development -->
+        <div class="bg-white rounded-[32px] p-8 border border-black/[0.03] flex flex-col justify-between min-h-[260px]">
+          <div class="flex items-start gap-5">
+            <div class="w-12 h-12 rounded-full bg-[#EEEEF6] flex-shrink-0 flex items-center justify-center text-[#6C63E8]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m16 18 6-6-6-6M8 6l-6 6 6 6"></path></svg>
+            </div>
+            <p class="text-[14px] text-[#777777] leading-relaxed">
+              I build REST APIs with Node.js and Express, covering authentication, validation, and clean, maintainable server logic.
+            </p>
+          </div>
+          <div class="pt-8 flex items-baseline justify-between border-t border-black/[0.04]">
+            <h3 class="text-[24px] font-medium text-[#222222] tracking-tight">Backend</h3>
+            <span class="text-[16px] font-semibold text-[#777777]">02</span>
+          </div>
+        </div>
+
+        <!-- 03 Graphic Design -->
+        <div class="bg-white rounded-[32px] p-8 border border-black/[0.03] flex flex-col justify-between min-h-[260px]">
+          <div class="flex items-start gap-5">
+            <div class="w-12 h-12 rounded-full bg-[#EEEEF6] flex-shrink-0 flex items-center justify-center text-[#6C63E8]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+            </div>
+            <p class="text-[14px] text-[#777777] leading-relaxed">
+              I design MongoDB schemas and data flows that keep apps fast, organized, and ready to scale.
+            </p>
+          </div>
+          <div class="pt-8 flex items-baseline justify-between border-t border-black/[0.04]">
+            <h3 class="text-[24px] font-medium text-[#222222] tracking-tight">Databases</h3>
+            <span class="text-[16px] font-semibold text-[#777777]">03</span>
+          </div>
+        </div>
+
+        <!-- 04 Branding -->
+        <div class="bg-white rounded-[32px] p-8 border border-black/[0.03] flex flex-col justify-between min-h-[260px]">
+          <div class="flex items-start gap-5">
+            <div class="w-12 h-12 rounded-full bg-[#EEEEF6] flex-shrink-0 flex items-center justify-center text-[#6C63E8]">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path fill="#FFA116" d="M16.102 17.93l-2.697 2.607c-.466.467-1.111.662-1.823.662s-1.357-.195-1.824-.662l-4.332-4.363c-.467-.467-.702-1.15-.702-1.863s.235-1.357.702-1.824l4.319-4.38c.467-.467 1.125-.645 1.837-.645s1.357.195 1.823.662l2.697 2.606c.514.515 1.365.497 1.9-.038.535-.536.553-1.387.039-1.901l-2.609-2.636a5.277 5.277 0 0 0-3.85-1.48c-1.472 0-2.843.566-3.85 1.48l-4.32 4.38c-1.028 1.009-1.593 2.378-1.593 3.821 0 1.442.565 2.812 1.593 3.82l4.332 4.363c1.007 1.028 2.378 1.613 3.85 1.613 1.473 0 2.844-.585 3.85-1.613l2.609-2.636c.514-.514.496-1.365-.039-1.901-.535-.535-1.386-.553-1.9-.038z"></path><path fill="#6C63E8" d="M10.802 13.5h9.396c.745 0 1.35-.605 1.35-1.35s-.605-1.35-1.35-1.35h-9.396c-.745 0-1.35.605-1.35 1.35s.605 1.35 1.35 1.35z"></path></svg>
+            </div>
+            <p class="text-[14px] text-[#777777] leading-relaxed">I practice DSA and pattern-based problem solving to write efficient code and think clearly under pressure.</p>
+          </div>
+          <div class="pt-8 flex items-baseline justify-between border-t border-black/[0.04]">
+            <h3 class="text-[24px] font-medium text-[#222222] tracking-tight">Problem Solving</h3>
+            <span class="text-[16px] font-semibold text-[#777777]">04</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SELECTED WORK SECTION (1fr / 3fr) -->
+    <section id="work" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Column (Sticky) -->
+      <div class="lg:col-span-4 lg:sticky lg:top-8 pt-4 space-y-6">
+        <h2 class="text-[42px] md:text-[50px] font-medium text-[#222222] subhead-tight">
+          Selected work
+        </h2>
+        <div>
+          <a href="https://github.com/your-username?tab=repositories" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#222222] text-white text-[14px] font-medium shadow-btn-dark hover:bg-black btn">
+            See All
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Featured + 2-Column Projects -->
+      <div class="lg:col-span-8 space-y-6">
+        <!-- Full-Width Featured Card -->
+        <div class="bg-white rounded-[40px] p-6 md:p-8 border border-black/[0.03]">
+          <div class="rounded-[28px] overflow-hidden aspect-[16/9] bg-stone-100">
+            <img src="https://static.vecteezy.com/system/resources/previews/073/991/437/non_2x/illustration-of-online-job-portal-vector.jpg" alt="Job Portal project preview" data-label="Job Portal" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover media-img">
+          </div>
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-[18px] md:text-[20px] font-semibold tracking-wider text-[#222222] uppercase">Job Portal</span>
+            
+          </div>
+          <div class="mt-3 flex items-center gap-2">
+            <span class="px-3.5 py-1.5 rounded-full bg-[#E1F2F5] text-[#2F9FB3] text-[11px] font-semibold tracking-wider uppercase">java backend</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-[#EBEBEB] text-[#666666] text-[11px] font-semibold tracking-wider uppercase">React frontend</span>
+          </div>
+        </div>
+
+        <!-- 2-Column Project Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Project 1: ZENPOINT -->
+          <div class="bg-white rounded-[32px] p-6 border border-black/[0.03] flex flex-col justify-between">
+            <div class="rounded-[24px] overflow-hidden aspect-[16/10] bg-stone-100">
+              <img src="https://cdn.jim-nielsen.com/ios/512/weather-2019-02-07.png" alt="Weather IQ project preview" data-label="Weather IQ" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover media-img">
+            </div>
+            <div class="mt-5">
+              <div class="flex items-center justify-between">
+                <span class="text-[17px] font-semibold tracking-wider text-[#222222] uppercase">Weather iq</span>
+                
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span class="px-3.5 py-1 rounded-full bg-[#E1F2F5] text-[#2F9FB3] text-[11px] font-semibold tracking-wider uppercase">React app</span>
+                <span class="px-3.5 py-1 rounded-full bg-[#EBEBEB] text-[#666666] text-[11px] font-semibold tracking-wider uppercase">Weather api&nbsp;</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 2: PAYU -->
+          <div class="bg-white rounded-[32px] p-6 border border-black/[0.03] flex flex-col justify-between">
+            <div class="rounded-[24px] overflow-hidden aspect-[16/10] bg-stone-100">
+              <img src="https://th.bing.com/th/id/OIP.cY49Uo6xLDtA3JkhjI7BlwHaHa?w=181&amp;h=181&amp;c=7&amp;r=0&amp;o=7&amp;dpr=1.8&amp;pid=1.7&amp;rm=3" alt="StayHub project preview" data-label="StayHub" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover media-img">
+            </div>
+            <div class="mt-5">
+              <div class="flex items-center justify-between">
+                <span class="text-[17px] font-semibold tracking-wider text-[#222222] uppercase">stayhub</span>
+                
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span class="px-3.5 py-1 rounded-full bg-[#E1F2F5] text-[#2F9FB3] text-[11px] font-semibold tracking-wider uppercase">Express &amp; node js</span>
+                <span class="px-3.5 py-1 rounded-full bg-[#EBEBEB] text-[#666666] text-[11px] font-semibold tracking-wider uppercase">Map api</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CONTACT SECTION -->
+    <section id="contact" class="w-full contact-gradient-card rounded-[32px] p-8 sm:p-14 md:p-20 flex justify-center border border-black/[0.04]">
+      <div class="w-full max-w-[840px] text-center space-y-8">
+        <div class="space-y-4">
+          <h2 class="text-[36px] sm:text-[46px] md:text-[52px] font-medium text-[#222222] subhead-tight">
+            Contact with me to sizzle your project
+          </h2>
+          <p class="text-[16px] sm:text-[18px] text-[#777777] max-w-[620px] mx-auto leading-relaxed">
+            Feel free to contact me if having any questions. I'm available for new projects or just for chatting.
+          </p>
+        </div>
+
+        <form id="contact-form" class="space-y-4 pt-4 text-left" action="#" method="post">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input type="text" id="name" name="name" placeholder="Name" aria-label="Your name" autocomplete="name" required class="w-full px-6 py-4 rounded-full bg-white/70 backdrop-blur-md border border-white/80 text-[#222222] placeholder-[#888888] focus:outline-none focus:ring-2 focus:ring-[#6C63E8]/40 field text-[15px]">
+            <input type="email" id="email" name="email" placeholder="Email" aria-label="Your email" autocomplete="email" required class="w-full px-6 py-4 rounded-full bg-white/70 backdrop-blur-md border border-white/80 text-[#222222] placeholder-[#888888] focus:outline-none focus:ring-2 focus:ring-[#6C63E8]/40 field text-[15px]">
+          </div>
+          <div>
+            <textarea rows="5" id="message" name="message" placeholder="Work Description..." aria-label="Work description" required class="w-full p-6 rounded-[28px] bg-white/70 backdrop-blur-md border border-white/80 text-[#222222] placeholder-[#888888] focus:outline-none focus:ring-2 focus:ring-[#6C63E8]/40 field text-[15px] resize-none"></textarea>
+          </div>
+          <div>
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+            <button id="submit-btn" type="submit" class="w-full py-4 rounded-full bg-[#404247] text-white font-medium text-[16px] shadow-btn-dark btn btn-wide hover:bg-[#2b2d30] disabled:opacity-70 disabled:cursor-not-allowed">
+              <span id="submit-label">Submit</span>
+            </button>
+            <p id="form-status" class="hidden" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 8. FOOTER BAR -->
+    <footer class="w-full bg-white rounded-[24px] px-8 py-8 flex flex-col md:flex-row items-center justify-between border border-black/[0.03] gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-[#222222] flex items-center justify-center text-white font-bold text-sm">SJ</div>
+        <span class="text-[14px] font-semibold text-[#222222] uppercase tracking-wider">Sanyam jain&nbsp;</span>
+        
+      </div>
+
+      <div class="flex items-center gap-6 text-[13px] font-semibold uppercase tracking-wider text-[#666666]">
+        <a href="#top" class="foot-link hover:text-[#2F9FB3]">B.tech</a>
+        <a href="#top" class="foot-link hover:text-[#2F9FB3]">IT</a>
+        <a href="#services" class="foot-link hover:text-[#2F9FB3]">Full Stack Dev</a>
+        <a href="#work" class="foot-link hover:text-[#2F9FB3]">Java backend</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ============ CONFIG — edit these two values ============ */
+    const CONFIG = {
+      // Where contact-form messages go (used for the mail-app fallback).
+      contactEmail: 'jainsanyam441@gmail.com',
+      // Optional: a Formspree / Getform / Web3Forms endpoint URL.
+      // If set, the form posts to it directly; if empty, it opens the visitor's mail app.
+      formEndpoint: ''
+    };
+    /* ======================================================== */
+
+    const $  = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+    const root = document.documentElement;
+    const hasIO = 'IntersectionObserver' in window;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
+
+    /* ---------- Entrance gate: wait for the font so nothing reflows mid-animation ---------- */
+    const fontGate = (document.fonts && document.fonts.load)
+      ? Promise.race([
+          Promise.all([document.fonts.load('500 1em Inter'), document.fonts.load('600 1em Inter')]).catch(() => {}),
+          new Promise((r) => setTimeout(r, 700))
+        ])
+      : Promise.resolve();
+    const ready = fontGate.then(() => new Promise((r) => requestAnimationFrame(() => r())));
+
+    /* ---------- Reveal engine ----------
+       - Elements visible on first load follow a hand-tuned sequence (base + i * step).
+       - Elements revealed by scrolling cascade by how many enter the viewport together,
+         so a lone card never waits for a "turn" that already passed. */
+    const domOrder = (a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+
+    const io = hasIO ? new IntersectionObserver((entries) => {
+      const batch = entries.filter((e) => e.isIntersecting).map((e) => e.target).sort(domOrder);
+      let n = 0;
+      batch.forEach((el) => {
+        const delay = Math.round(el._init ? el._plan : el._lag + (n++) * el._gap);
+        el.style.setProperty('--d', delay + 'ms');
+        el.classList.add('in');
+        io.unobserve(el);
+        setTimeout(() => el.classList.add('done'), delay + 1800); // release will-change
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }) : null;
+
+    const queue = (el) => ready.then(() => {
+      if (!io) { el.classList.add('in'); return; }
+      const r = el.getBoundingClientRect();
+      el._init = scrollY < 40 && r.top < innerHeight && r.bottom > 0;
+      io.observe(el);
+    });
+
+    function reveal(targets, { base = 0, step = 90, lag = 0, y, s, blur = false } = {}) {
+      const list = !targets ? [] : (targets.nodeType ? [targets] : Array.from(targets));
+      list.forEach((el, i) => {
+        el.classList.add('reveal');
+        if (y !== undefined) el.style.setProperty('--y', y);
+        if (s !== undefined) el.style.setProperty('--s', s);
+        if (blur) el.setAttribute('data-blur', '');
+        el._plan = base + i * step;   // first-load sequence
+        el._lag  = lag;               // scroll-in offset
+        el._gap  = step;              // scroll-in stagger
+        queue(el);
+      });
+    }
+
+    // Headline: each word rises out of its own mask. Keeps <br> line breaks.
+    function splitWords(el, { base = 0, step = 55, lag = 0, gap = 100 } = {}) {
+      if (!el) return;
+      const nodes = Array.from(el.childNodes);
+      el.setAttribute('aria-label', nodes.map((n) => (n.nodeName === 'BR' ? ' ' : n.textContent)).join('').trim().replace(/\s+/g, ' '));
+      el.setAttribute('data-split', '');
+      el.textContent = '';
+      let i = 0, needSpace = false;
+      nodes.forEach((node) => {
+        if (node.nodeName === 'BR') { el.appendChild(document.createElement('br')); needSpace = false; return; }
+        node.textContent.split(/\s+/).filter(Boolean).forEach((word) => {
+          if (needSpace) el.appendChild(document.createTextNode(' '));
+          const w = document.createElement('span');
+          w.className = 'w';
+          w.setAttribute('aria-hidden', 'true');
+          const inner = document.createElement('span');
+          inner.className = 'wi';
+          inner.style.setProperty('--i', i++);
+          inner.textContent = word;
+          w.appendChild(inner);
+          el.appendChild(w);
+          needSpace = true;
+        });
+      });
+      el.style.setProperty('--step', step + 'ms');
+      el._plan = base; el._lag = lag; el._gap = gap;
+      queue(el);
+    }
+
+    // Mission paragraph: words brighten one after another as you scroll through it.
+    function scrubWords(el) {
+      if (!el) return;
+      const text = el.textContent.trim().replace(/\s+/g, ' ');
+      el.setAttribute('aria-label', text);
+      el.textContent = '';
+      const parts = text.split(' ');
+      const words = parts.map((word, i) => {
+        const s = document.createElement('span');
+        s.className = 'sw';
+        s.setAttribute('aria-hidden', 'true');
+        s.textContent = word;
+        el.appendChild(s);
+        if (i < parts.length - 1) el.appendChild(document.createTextNode(' '));
+        return s;
+      });
+      const tail = 5, n = words.length;
+      let queued = false;
+      const update = () => {
+        queued = false;
+        const r = el.getBoundingClientRect();
+        const p = clamp((innerHeight * 0.88 - r.top) / (r.height + innerHeight * 0.28), 0, 1);
+        words.forEach((w, i) => {
+          const v = clamp((p * (n + tail) - i) / tail, 0, 1);
+          const o = (0.2 + 0.8 * v).toFixed(2);
+          if (w._o !== o) { w._o = o; w.style.opacity = o; }
+        });
+      };
+      const request = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+      addEventListener('scroll', request, { passive: true });
+      addEventListener('resize', request);
+      update();
+    }
+
+    try {
+      /* ---------- Header + hero: one orchestrated entrance ---------- */
+      reveal($('header'), { y: '-24px', s: '.985' });
+      const heroLeft = $('#hero > div:first-child');
+      splitWords($('h1', heroLeft), { base: 240, step: 80 });
+      reveal(heroLeft.querySelector('.space-y-8 > div'), { base: 120, y: '20px', blur: true });
+      reveal(heroLeft.querySelector('.space-y-8 > p'),   { base: 780, lag: 150, y: '24px', blur: true });
+      reveal(heroLeft.querySelector(':scope > .pt-8'),   { base: 920, lag: 250, y: '24px' });
+      reveal($$('#hero > div:last-child .grid > div'),   { base: 420, step: 130, y: '56px', s: '.955' });
+      reveal($$('#hero .icon-btn'),                      { base: 1200, lag: 500, step: 80, y: '0px', s: '.4' });
+
+      /* ---------- Mission ---------- */
+      const about = $('#about');
+      reveal(about, { y: '48px', s: '.97' });
+      if (!reduce) scrubWords($('h2', about));
+      reveal($$('#about > div:last-child > span'), { step: 80, lag: 200, y: '18px', blur: true });
+
+      /* ---------- Services ---------- */
+      splitWords($('#services h2'), { step: 60 });
+      reveal($('#services > div:first-child > p'), { lag: 260, y: '20px', blur: true });
+      reveal($$('#services > div:last-child > div'), { step: 110, y: '48px', s: '.97' });
+
+      /* ---------- Work ---------- */
+      splitWords($('#work h2'), { step: 60 });
+      reveal($('#work > div:first-child > div'), { lag: 260, y: '20px' });
+      reveal($('#work > div:last-child > div:first-child'), { y: '56px', s: '.97' });
+      reveal($$('#work > div:last-child > div:last-child > div'), { step: 130, y: '56px', s: '.97' });
+
+      /* ---------- Contact + footer ---------- */
+      reveal($('#contact'), { y: '40px', s: '.975' });
+      splitWords($('#contact h2'), { step: 40, lag: 120 });
+      reveal($('#contact h2 + p'), { lag: 380, y: '18px', blur: true });
+      reveal($$('#contact-form > *'), { base: 300, lag: 480, step: 110, y: '28px' });
+      reveal($('footer'), { y: '20px' });
+
+      /* ---------- Hover behaviour hooks ---------- */
+      $$('#services > div:last-child > div, #work > div:last-child > div:last-child > div, #work > div:last-child > div:first-child')
+        .forEach((c) => c.classList.add('card-lift'));
+      $$('#hero .reveal').forEach((c) => { if (c.querySelector('.media-img')) c.classList.add('zoom-host'); });
+    } catch (err) {
+      console.warn('Motion setup failed; showing content without animation.', err);
+      root.classList.add('no-motion');
+    }
+
+    /* ---------- Marquee: eases to a stop on hover and back up to speed ---------- */
+    (() => {
+      const track = $('.animate-marquee');
+      if (!track || reduce) return;
+      const wrap = track.closest('.marquee-wrap');
+      track.classList.add('is-js');
+      let x = 0, mult = 1, goal = 1, loop = 0, last = 0, raf = 0;
+      const measure = () => { loop = track.offsetWidth / 2; };
+      measure();
+      addEventListener('resize', measure);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+      const tick = (t) => {
+        const dt = Math.min(0.05, (t - (last || t)) / 1000);
+        last = t;
+        mult += (goal - mult) * (1 - Math.exp(-dt * 4.5));
+        if (loop > 0) {
+          x -= (loop / 22) * mult * dt;
+          if (x <= -loop) x += loop;
+          track.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
+        }
+        raf = requestAnimationFrame(tick);
+      };
+      const start = () => { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } };
+      const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+
+      if (hasIO) new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop())).observe(wrap);
+      else start();
+      wrap.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') goal = 0; });
+      wrap.addEventListener('pointerleave', () => { goal = 1; });
+    })();
+
+    /* ---------- Magnetic buttons ---------- */
+    if (finePointer && !reduce) {
+      $$('.btn:not(.btn-wide)').forEach((b) => {
+        const pull = 0.22, max = 9;
+        b.addEventListener('pointermove', (e) => {
+          const r = b.getBoundingClientRect();
+          const dx = (e.clientX - (r.left + r.width / 2)) * pull;
+          const dy = (e.clientY - (r.top + r.height / 2)) * pull;
+          b.style.translate = clamp(dx, -max, max).toFixed(1) + 'px ' + clamp(dy, -max, max).toFixed(1) + 'px';
+        });
+        b.addEventListener('pointerleave', () => { b.style.translate = ''; });
+      });
+    }
+
+    /* ---------- Eased anchor scrolling ---------- */
+    let glide = 0;
+    const cancelGlide = () => { if (glide) { cancelAnimationFrame(glide); glide = 0; } };
+    ['wheel', 'touchstart', 'keydown'].forEach((ev) => addEventListener(ev, cancelGlide, { passive: true }));
+
+    const docTop = (el) => { let y = 0; for (let n = el; n; n = n.offsetParent) y += n.offsetTop; return y; };
+    const easeInOutQuart = (t) => (t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2);
+
+    function glideTo(y) {
+      cancelGlide();
+      const from = scrollY;
+      const to = clamp(y, 0, Math.max(0, root.scrollHeight - innerHeight));
+      const dist = to - from;
+      if (Math.abs(dist) < 2) return;
+      const dur = clamp(Math.abs(dist) * 0.55, 650, 1500);
+      const t0 = performance.now();
+      const frame = (now) => {
+        const t = clamp((now - t0) / dur, 0, 1);
+        scrollTo(0, from + dist * easeInOutQuart(t));
+        glide = t < 1 ? requestAnimationFrame(frame) : 0;
+      };
+      glide = requestAnimationFrame(frame);
+    }
+
+    document.addEventListener('click', (e) => {
+      if (reduce || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const target = id && id !== 'top' ? document.getElementById(id) : null;
+      if (id && id !== 'top' && !target) return;
+      e.preventDefault();
+      const margin = target ? (parseFloat(getComputedStyle(target).scrollMarginTop) || 0) : 0;
+      glideTo(target ? docTop(target) - margin : 0);
+      try { history.pushState(null, '', '#' + id); } catch (_) { /* file:// or sandboxed */ }
+    });
+
+    /* ---------- Active nav link ---------- */
+    const links = $$('.nav-link');
+    if (hasIO && links.length) {
+      const byId = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+      const so = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            links.forEach((l) => l.classList.remove('active'));
+            const a = byId.get(e.target.id);
+            if (a) a.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-40% 0px -55% 0px' });
+      byId.forEach((_, id) => { const s = document.getElementById(id); if (s) so.observe(s); });
+      addEventListener('scroll', () => {
+        if (scrollY < 200) links.forEach((l) => l.classList.remove('active'));
+      }, { passive: true });
+    }
+
+    /* ---------- Image fallback (hotlinked images can fail) ---------- */
+    const placeholder = (label) => 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400"><defs>' +
+      '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E1F2F5"/>' +
+      '<stop offset="1" stop-color="#C4C2F7"/></linearGradient></defs>' +
+      '<rect width="640" height="400" fill="url(#g)"/>' +
+      '<text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" ' +
+      'font-family="Inter,Arial,sans-serif" font-size="32" font-weight="600" letter-spacing="4" fill="#2F9FB3">' +
+      label.toUpperCase() + '</text></svg>');
+
+    $$('img').forEach((img) => {
+      const fix = () => {
+        if (img.dataset.fallback) return;
+        img.dataset.fallback = '1';
+        img.src = placeholder(img.dataset.label || img.alt || 'Preview');
+      };
+      img.addEventListener('error', fix);
+      if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) fix();
+    });
+
+    /* ---------- Contact form ---------- */
+    const form = $('#contact-form');
+    if (form) {
+      const btn = $('#submit-btn');
+      const label = $('#submit-label');
+      const status = $('#form-status');
+      const idle = label.textContent;
+
+      const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+
+      const setStatus = (msg, ok) => {
+        status.textContent = msg;
+        status.className = 'mt-3 text-center text-[14px] ' + (ok ? 'text-[#2F9FB3]' : 'text-[#D14343]');
+        replay(status, 'pop');
+      };
+      const setBusy = (busy) => {
+        btn.disabled = busy;
+        label.innerHTML = busy ? '<span class="spinner"></span><span>Sending…</span>' : idle;
+        label.classList.toggle('flex', busy);
+        label.classList.toggle('items-center', busy);
+        label.classList.toggle('justify-center', busy);
+        label.classList.toggle('gap-2', busy);
+        replay(label, 'swap');
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!form.reportValidity()) return;
+        if (form.elements['_gotcha'] && form.elements['_gotcha'].value) return; // bot
+
+        const data = {
+          name: form.elements['name'].value.trim(),
+          email: form.elements['email'].value.trim(),
+          message: form.elements['message'].value.trim()
+        };
+
+        if (CONFIG.formEndpoint) {
+          setBusy(true);
+          try {
+            const res = await fetch(CONFIG.formEndpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error('Request failed');
+            form.reset();
+            setStatus('Message sent. Thanks, ' + data.name.split(' ')[0] + '! I\'ll reply soon.', true);
+          } catch (err) {
+            setStatus('Couldn\'t send your message. Please try again or email me directly.', false);
+          } finally {
+            setBusy(false);
+          }
+        } else {
+          const subject = encodeURIComponent('Portfolio inquiry from ' + data.name);
+          const body = encodeURIComponent(data.message + '\n\n— ' + data.name + ' (' + data.email + ')');
+          setStatus('Opening your email app…', true);
+          window.location.href = 'mailto:' + CONFIG.contactEmail + '?subject=' + subject + '&body=' + body;
+        }
+      });
+    }
+  })();
+  </script>
+
+</body>
+</html>
